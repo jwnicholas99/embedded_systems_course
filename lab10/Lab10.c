@@ -74,8 +74,8 @@ void PortF_Init(void);
 
 // ***** 3. Subroutines Section *****
 void SysTick_Init(void){
-	NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup             
-  NVIC_ST_CTRL_R = 0x00000005;          // enable SysTick with core clock
+    NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup             
+    NVIC_ST_CTRL_R = 0x00000005;          // enable SysTick with core clock
 }
 
 // The delay parameter is in units of the 80 MHz core clock. (12.5 ns)
@@ -94,36 +94,36 @@ void SysTick_Wait1ms(unsigned long delay){
 }
 
 void PortE_Init(void){
-	GPIO_PORTE_AMSEL_R &= 0x00;        // 2) disable analog function
-  GPIO_PORTE_PCTL_R &= 0x00000000;   // 3) GPIO clear bit PCTL  
-  GPIO_PORTE_DIR_R &= ~0x07;         // 4.1) PE2-0 input, 
-  GPIO_PORTE_AFSEL_R &= 0x00;        // 5) no alternate function       
-  GPIO_PORTE_DEN_R |= 0x07;          // 7) enable digital pins PE2-PE0
+    GPIO_PORTE_AMSEL_R &= 0x00;        // 2) disable analog function
+    GPIO_PORTE_PCTL_R &= 0x00000000;   // 3) GPIO clear bit PCTL  
+    GPIO_PORTE_DIR_R &= ~0x07;         // 4.1) PE2-0 input, 
+    GPIO_PORTE_AFSEL_R &= 0x00;        // 5) no alternate function       
+    GPIO_PORTE_DEN_R |= 0x07;          // 7) enable digital pins PE2-PE0
 }
 
 void PortB_Init(void){
 	GPIO_PORTB_AMSEL_R &= 0x00;        // 2) disable analog function
-  GPIO_PORTB_PCTL_R &= 0x00000000;   // 3) GPIO clear bit PCTL  
-  GPIO_PORTB_DIR_R |= 0x3F;          // 4.2) PB5-0 output  
-  GPIO_PORTB_AFSEL_R &= 0x00;        // 5) no alternate function       
-  GPIO_PORTB_DEN_R |= 0x3F;          // 7) enable digital pins PB5-0
+    GPIO_PORTB_PCTL_R &= 0x00000000;   // 3) GPIO clear bit PCTL  
+    GPIO_PORTB_DIR_R |= 0x3F;          // 4.2) PB5-0 output  
+    GPIO_PORTB_AFSEL_R &= 0x00;        // 5) no alternate function       
+    GPIO_PORTB_DEN_R |= 0x3F;          // 7) enable digital pins PB5-0
 }
 
 void PortF_Init(void){ 
-  GPIO_PORTF_LOCK_R = 0x4C4F434B;   // 2) unlock GPIO Port F
-  GPIO_PORTF_CR_R = 0x0A;           // allow changes to PF3 and PF1
-  // only PF0 needs to be unlocked, other bits can't be locked
-  GPIO_PORTF_AMSEL_R = 0x00;        // 3) disable analog on PF
-  GPIO_PORTF_PCTL_R = 0x00000000;   // 4) PCTL GPIO on PF4-0
-  GPIO_PORTF_DIR_R = 0x0E;          // 5) PF4,PF0 in, PF3-1 out
-  GPIO_PORTF_AFSEL_R = 0x00;        // 6) disable alt funct on PF7-0
-  // GPIO_PORTF_PUR_R = 0x11;          // enable pull-up on PF0 and PF4
-  GPIO_PORTF_DEN_R = 0x0A;          // 7) enable digital I/O on PF3 and PF1
+    GPIO_PORTF_LOCK_R = 0x4C4F434B;   // 2) unlock GPIO Port F
+    GPIO_PORTF_CR_R = 0x0A;           // allow changes to PF3 and PF1
+    // only PF0 needs to be unlocked, other bits can't be locked
+    GPIO_PORTF_AMSEL_R = 0x00;        // 3) disable analog on PF
+    GPIO_PORTF_PCTL_R = 0x00000000;   // 4) PCTL GPIO on PF4-0
+    GPIO_PORTF_DIR_R = 0x0E;          // 5) PF4,PF0 in, PF3-1 out
+    GPIO_PORTF_AFSEL_R = 0x00;        // 6) disable alt funct on PF7-0
+    // GPIO_PORTF_PUR_R = 0x11;          // enable pull-up on PF0 and PF4
+    GPIO_PORTF_DEN_R = 0x0A;          // 7) enable digital I/O on PF3 and PF1
 }
 
 void Init_Ports(void){ volatile unsigned long delay;
 	SYSCTL_RCGC2_R |= 0x00000032;     // 1) activate clock for Ports E, B and F
-  delay = SYSCTL_RCGC2_R;           // allow time for clock to start
+    delay = SYSCTL_RCGC2_R;           // allow time for clock to start
 	
 	PortE_Init(); // Init port E for sensors
 	PortB_Init(); // Init port B for road LEDs
@@ -131,14 +131,14 @@ void Init_Ports(void){ volatile unsigned long delay;
 }
 
 int main(void){ 
-  TExaS_Init(SW_PIN_PE210, LED_PIN_PB543210,ScopeOff); // activate grader and set system clock to 80 MHz
+    TExaS_Init(SW_PIN_PE210, LED_PIN_PB543210,ScopeOff); // activate grader and set system clock to 80 MHz
  
 	SysTick_Init();
 	Init_Ports();
   
-  EnableInterrupts();
+    EnableInterrupts();
 	S = GoWest;
-  while(1){
+    while(1){
 		ROADLED = FSM[S].OutLED;
 		PEDLED = FSM[S].OutPed;
 		SysTick_Wait1ms(FSM[S].Time);
