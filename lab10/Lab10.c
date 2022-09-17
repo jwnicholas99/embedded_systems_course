@@ -80,17 +80,17 @@ void SysTick_Init(void){
 
 // The delay parameter is in units of the 80 MHz core clock. (12.5 ns)
 void SysTick_Wait(unsigned long delay){
-	NVIC_ST_RELOAD_R = delay - 1;
-	NVIC_ST_CURRENT_R = 0;
-	while((NVIC_ST_CTRL_R & 0x00010000) == 0){
-	}
+    NVIC_ST_RELOAD_R = delay - 1;
+    NVIC_ST_CURRENT_R = 0;
+    while((NVIC_ST_CTRL_R & 0x00010000) == 0){
+    }
 }
 
 void SysTick_Wait1ms(unsigned long delay){
-	unsigned long i;
-	for(i=0; i<delay; i++){
-		SysTick_Wait(80000); // wait 1ms
-	}
+    unsigned long i;
+    for(i=0; i<delay; i++){
+        SysTick_Wait(80000); // wait 1ms
+    }
 }
 
 void PortE_Init(void){
@@ -102,7 +102,7 @@ void PortE_Init(void){
 }
 
 void PortB_Init(void){
-	GPIO_PORTB_AMSEL_R &= 0x00;        // 2) disable analog function
+    GPIO_PORTB_AMSEL_R &= 0x00;        // 2) disable analog function
     GPIO_PORTB_PCTL_R &= 0x00000000;   // 3) GPIO clear bit PCTL  
     GPIO_PORTB_DIR_R |= 0x3F;          // 4.2) PB5-0 output  
     GPIO_PORTB_AFSEL_R &= 0x00;        // 5) no alternate function       
@@ -122,28 +122,28 @@ void PortF_Init(void){
 }
 
 void Init_Ports(void){ volatile unsigned long delay;
-	SYSCTL_RCGC2_R |= 0x00000032;     // 1) activate clock for Ports E, B and F
+    SYSCTL_RCGC2_R |= 0x00000032;     // 1) activate clock for Ports E, B and F
     delay = SYSCTL_RCGC2_R;           // allow time for clock to start
 	
-	PortE_Init(); // Init port E for sensors
-	PortB_Init(); // Init port B for road LEDs
-	PortF_Init(); // Init port F for ped LEDs
+    PortE_Init(); // Init port E for sensors
+    PortB_Init(); // Init port B for road LEDs
+    PortF_Init(); // Init port F for ped LEDs
 }
 
 int main(void){ 
     TExaS_Init(SW_PIN_PE210, LED_PIN_PB543210,ScopeOff); // activate grader and set system clock to 80 MHz
  
-	SysTick_Init();
-	Init_Ports();
+    SysTick_Init();
+    Init_Ports();
   
     EnableInterrupts();
-	S = GoWest;
+    S = GoWest;
     while(1){
-		ROADLED = FSM[S].OutLED;
-		PEDLED = FSM[S].OutPed;
-		SysTick_Wait1ms(FSM[S].Time);
-		Input = SENSOR;
-		S = FSM[S].Next[Input];
-  }
+        ROADLED = FSM[S].OutLED;
+        PEDLED = FSM[S].OutPed;
+        SysTick_Wait1ms(FSM[S].Time);
+        Input = SENSOR;
+        S = FSM[S].Next[Input];
+    }
 }
 
